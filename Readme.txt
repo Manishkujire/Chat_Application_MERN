@@ -8,7 +8,7 @@ git init
 git add .
 git commit -m "first commit"    
 git branch -M main
-git remote add origin https://github.com/Manishkujire/Internship.git
+git remote add origin https://github.com/Manishkujire/Chat_Application_MERN.git
 git push -u origin main
 
 git checkout
