@@ -7,7 +7,14 @@ export const ChatContextProvider = ({ children, user }) => {
     const [userChats, setUserChats] = useState(null)
     const [isUserChatsLoading, setIsUserChatsLoading] = useState(false)
     const [chatError, setChatError] = useState(null)
+    const [potentialChats,setPotentialChats]=useState([])
+    useEffect(()=>{
+        const getUsers=()=>{
 
+        }
+        getUsers() 
+
+    },[])
     useEffect(() => {
         const getUserChats = async () => {
             if (user?._id) {

@@ -1,4 +1,4 @@
-export const baseurl = "http://localhost:5000/api";
+export const baseurl = "http://192.168.1.8:5000/api";
 import axios from "axios"
 
 const config = {
