@@ -19,10 +19,8 @@ export const AuthContextProvider = ({ children }) => {
     const [logInfo, setLogInfo] = useState({
         email: "", password: ""
     })
-    console.log(logInfo)
     const [authError, setAuthError] = useState(null)
     const [isRegLoading, setIsRegLoading] = useState(false)
-    console.log(user)
     useEffect(() => {
         let user = localStorage.getItem("User")
         setUser(JSON.parse(user))
@@ -76,7 +74,6 @@ export const AuthContextProvider = ({ children }) => {
 
 
     const logutUser = useCallback(() => {
-        console.log("logged out")
         setUser(null)
         localStorage.removeItem("User")
     }, [])

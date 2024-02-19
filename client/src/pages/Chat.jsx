@@ -6,6 +6,7 @@ import { AuthContext } from '../context/AuthContext';
 import { ChatContext } from '../context/chatContext';
 import UserChat from '../components/chat/UserChat';
 import PotentialChats from '../components/chat/PotentialChats';
+import ChatBox from '../components/chat/ChatBox';
 export default function Chat() {
   const { user } = useContext(AuthContext)
   const navigate = useNavigate()
@@ -17,7 +18,6 @@ export default function Chat() {
 
 
   const { userChats, isUserChatsLoading, chatError,updateCurrentChat } = useContext(ChatContext)
-  console.log(userChats)
   return (
     <>
       <Container><PotentialChats/>
@@ -31,7 +31,7 @@ export default function Chat() {
   </div>)
  }))         
 }</Stack>
-          <p>ChatBox</p>
+         <ChatBox/>
         </Stack>)}
       </Container></>
 
