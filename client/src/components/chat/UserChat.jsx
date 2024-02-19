@@ -1,12 +1,14 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Container, Nav, Navbar, Stack, Button } from 'react-bootstrap'
 import profile_pic from "../../assets/profile_pic.svg"
 import { useFetchRecipient } from "../../hooks/useFetchRecipient"
+import { ChatContext } from '../../context/chatContext'
 export default function UserChat({ chat, user }) {
   const { recipientUser } = useFetchRecipient(chat, user)
+
   // console.log(recipientUser)
   return (
-    <Stack direction='horizontal' gap={3} className='user-card align-items-center p-2 justify-content-between' role="button">
+    <Stack direction='horizontal' gap={3} className='user-card align-items-center p-2 justify-content-between' role="button" >
       <div className='d-flex align-items-center'>
         <div className="me-2 ">
           <img src={profile_pic} height="45px" />
