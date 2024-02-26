@@ -103,9 +103,10 @@ body{
   background: rgb(30, 30, 30);
   padding: 1rem;
 }
-.send-btn {
+.send-btn { 
+  
   border: none;
-  background: rgba(72, 112, 223, 1);
+  background: rgb(168, 170, 176);
   height: 40px;
   width: 40px;
   border-radius: 50%;

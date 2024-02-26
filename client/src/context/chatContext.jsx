@@ -2,7 +2,7 @@ import { createContext, useCallback, useEffect, useState } from "react";
 import { baseurl, getRequest, postRequest } from "../utils/services";
 import axios from "axios";
 import { json } from "react-router-dom";
-
+import { io } from "socket.io-client"
 export const ChatContext = createContext()
 
 export const ChatContextProvider = ({ children, user }) => {
@@ -11,13 +11,74 @@ export const ChatContextProvider = ({ children, user }) => {
     const [chatError, setChatError] = useState(null)
     const [potentialChats, setPotentialChats] = useState([])
     const [currentChat, setCurrentChat] = useState(null)
-    console.log("curr", currentChat)
     const [messages, setMessages] = useState(null)
     const [isMessageLoading, setIsMessageLoading] = useState(false)
 
     const [sendTextMessageError, setSendTextMessageError] = useState(null)
 
     const [newMessage, setNewMessage] = useState(null)
+
+    const [socket, setSocket] = useState(null)
+    const [onlineUsers, setOnlineUsers] = useState([])
+
+    const [notifications, setNotifications] = useState([])
+    console.log("notifications", notifications)
+
+    useEffect(() => {
+        const newSocket = io("http://192.168.87.117:3000")
+        setSocket(newSocket)
+        return () => {
+            newSocket.disconnect()
+        }
+    }, [user])
+
+
+    useEffect(() => {
+
+        if (socket == null) return
+        socket.emit("addNewUser", user?._id)
+        socket.on("getOnlineUsers", (res) => {
+            setOnlineUsers(res)
+        })
+
+
+    }, [socket])
+    useEffect(() => {
+        if (socket == null) return
+        let recipentId = currentChat?.members.find((id) => id != user?._id)
+
+        socket.emit("sendMessage", { ...newMessage, recipentId })
+
+
+    }, [newMessage])
+
+    //recieve msg and ntfctn
+
+    useEffect(() => {
+        if (socket == null) return
+
+        socket.on("getMessage", (res) => {
+
+            if (currentChat?._id !== res.chatId) return
+
+            setMessages((pre) => [...pre, res])
+        })
+
+        socket.on("getNotification", (res) => {
+            const isChatOpen = currentChat?.members.some(id => id === res.senderId)
+            if (isChatOpen) {
+                setNotifications(pre => [{ ...res, isRead: true }, ...pre])
+            } else {
+                setNotifications(pre => [ res,...pre])
+            }
+        })
+
+        return () => {
+            socket.off("getMessage")
+            socket.off("getNotification")
+        }
+
+    }, [socket, currentChat])
 
 
     useEffect(() => {
@@ -130,7 +191,7 @@ export const ChatContextProvider = ({ children, user }) => {
     }, [user])
 
     return <ChatContext.Provider value={{
-        userChats, isUserChatsLoading, chatError, potentialChats, createChat, updateCurrentChat, currentChat, isMessageLoading, messages, sendTextMessage
+        userChats, isUserChatsLoading, chatError, potentialChats, createChat, updateCurrentChat, currentChat, isMessageLoading, messages, sendTextMessage, onlineUsers,notifications
     }}>{children}</ChatContext.Provider>
 
 }

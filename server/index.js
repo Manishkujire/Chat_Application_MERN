@@ -33,7 +33,7 @@ const uri = process.env.ATLASS_URI
 
 app.listen(port, () => {
   console.log("Server is running at http://localhost:" + port);
-});
+})
 
 
 
@@ -43,7 +43,6 @@ mongoose.connect(uri,{
 }).then(()=>{
     console.log("mongoose connected")
 }).catch((err)=>{
-  console.log("okdsbuvgkb\n");
   
     console.log("error: ",err.message)
 })
