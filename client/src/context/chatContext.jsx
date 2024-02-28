@@ -1,5 +1,5 @@
 import { createContext, useCallback, useEffect, useState } from "react";
-import { baseurl, getRequest, postRequest } from "../utils/services";
+import { serverBaseUrl, getRequest, postRequest, socketBaseUrl } from "../utils/services";
 import axios from "axios";
 import { json } from "react-router-dom";
 import { io } from "socket.io-client"
@@ -22,15 +22,17 @@ export const ChatContextProvider = ({ children, user }) => {
     const [onlineUsers, setOnlineUsers] = useState([])
 
     const [notifications, setNotifications] = useState([])
+
+    const [allUsers,setAllUsers]=useState([])
     console.log("notifications", notifications)
 
     useEffect(() => {
-        const newSocket = io("http://192.168.87.117:3000")
+        const newSocket = io(socketBaseUrl)
         setSocket(newSocket)
         return () => {
             newSocket.disconnect()
         }
-    }, [user])
+    }, [user]) 
 
 
     useEffect(() => {
@@ -89,7 +91,7 @@ export const ChatContextProvider = ({ children, user }) => {
             setIsMessageLoading(true)
             setMessages(null)
             try {
-                const response = await getRequest(`${baseurl}/messages/${currentChat?._id}`)
+                const response = await getRequest(`${serverBaseUrl}/messages/${currentChat?._id}`)
                 setMessages(response)
                 setIsMessageLoading(false)
 
@@ -107,8 +109,8 @@ export const ChatContextProvider = ({ children, user }) => {
         const getUsers = async () => {
             setChatError(null)
             try {
-                const response = await getRequest(`${baseurl}/users`)
-
+                const response = await getRequest(`${serverBaseUrl}/users`)
+                setAllUsers(response)
                 const pChats = response.filter((u) => {
                     let isChatCreated
                     if (user._id === u._id) return false
@@ -139,7 +141,7 @@ export const ChatContextProvider = ({ children, user }) => {
         setChatError(null)
 
         try {
-            const response = await postRequest(`${baseurl}/chats`, JSON.stringify({
+            const response = await postRequest(`${serverBaseUrl}/chats`, JSON.stringify({
                 firstId, secondId
             }))
             setUserChats((pre) => [...pre, response])
@@ -159,7 +161,7 @@ export const ChatContextProvider = ({ children, user }) => {
     const sendTextMessage = useCallback(async (text, senderId, chatId, setTextMessage) => {
         if (!text) return console.log("empty")
         try {
-            const response = await postRequest(`${baseurl}/messages`, JSON.stringify({
+            const response = await postRequest(`${serverBaseUrl}/messages`, JSON.stringify({
                 chatId, senderId, text
             }))
             setNewMessage(response)
@@ -178,7 +180,7 @@ export const ChatContextProvider = ({ children, user }) => {
                 setChatError(null)
                 setUserChats(null)
                 setIsUserChatsLoading(true)
-                const response = await getRequest(`${baseurl}/chats/${user?._id}`)
+                const response = await getRequest(`${serverBaseUrl}/chats/${user?._id}`)
                 if (response.error) {
                     setIsUserChatsLoading(false)
                     return setChatError(response.error)
@@ -191,7 +193,7 @@ export const ChatContextProvider = ({ children, user }) => {
     }, [user])
 
     return <ChatContext.Provider value={{
-        userChats, isUserChatsLoading, chatError, potentialChats, createChat, updateCurrentChat, currentChat, isMessageLoading, messages, sendTextMessage, onlineUsers,notifications
+        userChats, isUserChatsLoading, chatError, potentialChats, createChat, updateCurrentChat, currentChat, isMessageLoading, messages, sendTextMessage, onlineUsers,notifications,allUsers
     }}>{children}</ChatContext.Provider>
 
 }

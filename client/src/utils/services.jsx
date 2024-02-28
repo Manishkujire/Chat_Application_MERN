@@ -1,4 +1,5 @@
-export const baseurl = "http://192.168.87.117:5000/api";
+export const serverBaseUrl = "http://192.168.1.7:5000/api";
+export const socketBaseUrl = "http://192.168.1.7:3000";
 import axios from "axios"
 
 const config = {

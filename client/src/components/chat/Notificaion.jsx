@@ -7,9 +7,17 @@ export default function Notificaion() {
     const [isOpen,setIsOpen]=useState(false)
 
     const {user}=useContext(AuthContext)
-    // const {notificaions,userChats,allUsers}=useContext(ChatContext)
-    // const unreadNotifications=unreadNotificationFunc(notificaions)
+    const {notifications,userChats,allUsers}=useContext(ChatContext)
+    console.log("notifications",notifications)
 
+    const unreadNotifications=unreadNotificationFunc(notifications)
+    const modifiedNotifications=notifications.map((n)=>{
+        const sender=allUsers.find(user=>user._id==n.senderId)
+
+        return({...n,senderName:sender?.name})
+    })
+console.log("unreadNotifications",unreadNotifications)
+    console.log("m notifications",modifiedNotifications)
 
     
 
